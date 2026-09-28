@@ -1,0 +1,18 @@
+name: Avisos de Mi Sistema
+# Cada 5 minutos le pregunta al servidor si toca mandar algún aviso (mañana, noche, resumen del domingo)
+# y la copia semanal por correo. Quien decide y manda es el servidor; esto solo lo despierta.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Despertar al servidor
+        env:
+          CRON_URL: ${{ secrets.CRON_URL }}
+        run: curl -fsS --max-time 110 "$CRON_URL" > /dev/null
